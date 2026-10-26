@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rutas Consultorio Rosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rosa-50:#fff5f8;
+    --rosa-100:#fde7ef;
+    --rosa-200:#f9cfdf;
+    --rosa-300:#f4aec8;
+    --rosa-400:#ec89ad;
+    --rosa-600:#c2477a;
+    --ciruela:#7a3456;
+    --texto:#4a2b3a;
+    --sombra:0 10px 30px rgba(194,71,122,.15);
+
+    /* Colores de cada sección */
+    --naranja-1:#ffe6d5; --naranja-2:#ffd3b8; --naranja-3:#f7a978; --naranja-txt:#9a4a1f;
+    --lila-1:#f1e6fb;    --lila-2:#e0cff5;    --lila-3:#b893e3;    --lila-txt:#5e3a86;
+    --azul-1:#e2f1fc;    --azul-2:#c9e4f8;    --azul-3:#7fb8e6;    --azul-txt:#2d5f86;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',sans-serif;color:var(--texto);background:var(--rosa-50);
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+
+  /* ---------- Barra de navegación ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;background:rgba(255,245,248,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--rosa-200);
+  }
+  .nav-in{
+    max-width:1150px;margin:auto;padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ciruela);font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.1rem}
+  .marca svg{width:34px;height:34px}
+  .nav ul{list-style:none;display:flex;gap:6px;flex-wrap:wrap}
+  .nav a.link{
+    text-decoration:none;color:var(--ciruela);font-weight:600;font-size:.95rem;
+    padding:8px 14px;border-radius:999px;transition:.2s;
+  }
+  .nav a.link:hover{background:var(--rosa-100)}
+  .nav a.link.activo[href="#inicio"]{background:var(--rosa-200)}
+  .nav a.link.activo[href="#ruta"]{background:var(--naranja-2);color:var(--naranja-txt)}
+  .nav a.link.activo[href="#protocolo"]{background:var(--lila-2);color:var(--lila-txt)}
+  .nav a.link.activo[href="#manual"]{background:var(--azul-2);color:var(--azul-txt)}
+
+  /* ---------- Banda de cabecera (mismo modelo en todas las páginas) ---------- */
+  .banda{
+    position:relative;overflow:hidden;text-align:center;
+    /* Alto fijo de 9 cm para todas las bandas */
+    height:9cm;padding:0 0 60px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#fde2ec 0%,#f7cde0 45%,#eadcf8 100%);
+  }
+  /* Imagen corporativa: arriba a la izquierda, una quinta parte del ancho, 0.5 cm de padding */
+  .logo-banda{
+    position:absolute;top:0;left:0;z-index:3;
+    width:20%;padding:0.5cm;
+    text-align:left;
+  }
+  /* Páginas internas: contenido más compacto para caber en 9 cm */
+  .banda.naranja h1,.banda.lila h1,.banda.azul h1{font-size:clamp(1.6rem,4vw,2.8rem)}
+  .banda.naranja p,.banda.lila p,.banda.azul p{margin-top:8px;font-size:1rem}
+  .banda.naranja .mini,.banda.lila .mini,.banda.azul .mini{width:64px;height:64px;margin-bottom:10px}
+  .banda.naranja .mini svg,.banda.lila .mini svg,.banda.azul .mini svg{width:48px;height:48px}
+  .banda .volver{margin-top:12px;padding:7px 18px}
+  .logo-banda img{width:100%;height:auto;display:block}
+  .banda h1,.banda p{padding-left:20px;padding-right:20px}
+  .banda h1{
+    font-family:'Quicksand',sans-serif;font-weight:700;line-height:1.1;
+    font-size:clamp(2rem,5.5vw,4rem);color:var(--ciruela);position:relative;z-index:2;
+  }
+  .banda p{margin-top:14px;font-size:1.1rem;color:#8a4d6a;position:relative;z-index:2}
+  .banda .mini{
+    width:92px;height:92px;margin:0 auto 16px;background:#fff;border-radius:50%;
+    display:grid;place-items:center;box-shadow:var(--sombra);position:relative;z-index:2;
+  }
+  .banda .mini svg{width:68px;height:68px}
+  .burbuja{position:absolute;border-radius:50%;opacity:.55;z-index:1}
+  .b1{width:260px;height:260px;background:#fff;left:-80px;top:-60px}
+  .b2{width:180px;height:180px;background:#eadcf8;right:6%;top:30px}
+  .b3{width:120px;height:120px;background:#d7f2ea;left:18%;bottom:-40px}
+  .b4{width:90px;height:90px;background:#ffe3d6;right:22%;bottom:20px}
+  .ola{position:absolute;bottom:-1px;left:0;width:100%;height:70px;z-index:2}
+  .volver{
+    display:inline-flex;align-items:center;gap:6px;margin-top:20px;position:relative;z-index:3;
+    text-decoration:none;font-weight:700;background:#fff;padding:9px 20px;border-radius:999px;
+    color:inherit;box-shadow:0 4px 12px rgba(0,0,0,.06);
+  }
+
+  /* Naranja pastel — Ruta */
+  .banda.naranja{background:linear-gradient(135deg,#fff0e6 0%,#ffd9c2 50%,#ffc9a8 100%);color:var(--naranja-txt)}
+  .banda.naranja h1{color:var(--naranja-txt)}
+  .banda.naranja p{color:#b0673c}
+  .banda.naranja .b2{background:#ffe9b8}.banda.naranja .b3{background:#ffd0d6}.banda.naranja .b4{background:#fff}
+
+  /* Lila pastel — Protocolo */
+  .banda.lila{background:linear-gradient(135deg,#f6effd 0%,#e6d6f8 50%,#d6c2f2 100%);color:var(--lila-txt)}
+  .banda.lila h1{color:var(--lila-txt)}
+  .banda.lila p{color:#7d59a6}
+  .banda.lila .b2{background:#fbd9ea}.banda.lila .b3{background:#d5e9fb}.banda.lila .b4{background:#fff}
+
+  /* Azul claro pastel — Manual */
+  .banda.azul{background:linear-gradient(135deg,#eef7fe 0%,#d4eafa 50%,#bcdcf5 100%);color:var(--azul-txt)}
+  .banda.azul h1{color:var(--azul-txt)}
+  .banda.azul p{color:#4f7fa6}
+  .banda.azul .b2{background:#d7f2ea}.banda.azul .b3{background:#e9defa}.banda.azul .b4{background:#fff}
+
+  /* ---------- Tarjetas ---------- */
+  main{flex:1}
+  .tarjetas{
+    max-width:1150px;margin:-60px auto 60px;padding:0 20px;position:relative;z-index:5;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
+  }
+  .tarjeta{
+    background:#fff;border-radius:28px;padding:34px 26px 28px;text-align:center;
+    box-shadow:var(--sombra);border:1px solid var(--rosa-100);
+    display:flex;flex-direction:column;align-items:center;transition:transform .25s, box-shadow .25s;
+  }
+  .tarjeta:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(194,71,122,.22)}
+  .icono{width:170px;height:170px;border-radius:50%;display:grid;place-items:center;margin-bottom:22px}
+  .icono svg{width:130px;height:130px}
+  .i-ruta{background:linear-gradient(145deg,var(--naranja-1),var(--rosa-100))}
+  .i-auxilio{background:linear-gradient(145deg,var(--lila-1),var(--rosa-100))}
+  .i-manual{background:linear-gradient(145deg,var(--azul-1),var(--rosa-100))}
+  .tarjeta h2{font-family:'Quicksand',sans-serif;color:var(--ciruela);font-size:1.35rem;margin-bottom:10px}
+  .tarjeta p{color:#8a6577;font-size:.95rem;margin-bottom:22px;flex:1}
+  .chip{display:inline-block;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+  .chip.naranja{background:var(--naranja-1);color:var(--naranja-txt)}
+  .chip.lila{background:var(--lila-1);color:var(--lila-txt)}
+  .chip.azul{background:var(--azul-1);color:var(--azul-txt)}
+  .btn{
+    display:inline-block;text-decoration:none;font-weight:800;letter-spacing:.08em;
+    background:linear-gradient(135deg,var(--rosa-300),var(--rosa-400));
+    color:#fff;padding:12px 40px;border-radius:999px;font-size:.95rem;
+    box-shadow:0 6px 16px rgba(236,137,173,.45);transition:.2s;
+  }
+  .btn:hover{filter:brightness(1.05);transform:scale(1.04)}
+
+  /* ---------- Páginas ---------- */
+  .pagina{display:none}
+  .pagina.visible{display:block}
+  .contenido{max-width:960px;margin:-50px auto 60px;padding:0 20px;position:relative;z-index:5}
+
+  /* Imagen única (Ruta) */
+  .hoja{background:#fff;border-radius:24px;padding:14px;box-shadow:var(--sombra)}
+  .hoja img{width:100%;height:auto;display:block;border-radius:16px;cursor:zoom-in}
+
+  /* ---------- Carrusel ---------- */
+  .carrusel{background:#fff;border-radius:24px;padding:16px;box-shadow:var(--sombra);--c:var(--rosa-400);--c-suave:var(--rosa-100)}
+  .carrusel.lila{--c:var(--lila-3);--c-suave:var(--lila-1);--c-txt:var(--lila-txt)}
+  .carrusel.azul{--c:var(--azul-3);--c-suave:var(--azul-1);--c-txt:var(--azul-txt)}
+  .visor-c{position:relative;overflow:hidden;border-radius:16px;background:var(--c-suave)}
+  .pista{display:flex;transition:transform .45s ease}
+  .diapo{min-width:100%;display:flex;align-items:center;justify-content:center}
+  .diapo img{width:100%;height:auto;max-height:78vh;object-fit:contain;display:block;cursor:zoom-in;user-select:none;-webkit-user-drag:none}
+  .flecha{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+    width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+    background:rgba(255,255,255,.92);color:var(--c-txt);font-size:1.5rem;font-weight:800;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);transition:.2s;
+  }
+  .flecha:hover{background:var(--c);color:#fff}
+  .flecha.izq{left:12px}.flecha.der{right:12px}
+  .contador{
+    position:absolute;top:12px;right:12px;z-index:3;background:rgba(255,255,255,.92);
+    color:var(--c-txt);font-weight:800;font-size:.85rem;padding:5px 12px;border-radius:999px;
+  }
+  .puntos{display:flex;justify-content:center;gap:8px;margin:16px 0 6px;flex-wrap:wrap}
+  .puntos button{width:11px;height:11px;border-radius:999px;border:none;background:var(--c-suave);cursor:pointer;transition:.25s;outline:1px solid var(--c)}
+  .puntos button.on{width:30px;background:var(--c)}
+  .miniaturas{display:flex;gap:10px;overflow-x:auto;padding:12px 2px 4px;scrollbar-width:thin}
+  .miniaturas button{
+    flex:0 0 auto;width:78px;height:96px;border-radius:12px;overflow:hidden;cursor:pointer;
+    border:3px solid transparent;background:var(--c-suave);padding:0;opacity:.6;transition:.2s;
+    font-weight:800;color:var(--c-txt);
+  }
+  .miniaturas button img{width:100%;height:100%;object-fit:cover;display:block}
+  .miniaturas button.on{border-color:var(--c);opacity:1}
+
+  /* Recuadro cuando falta la imagen */
+  .vacio{
+    width:100%;aspect-ratio:3/4;max-height:78vh;border-radius:16px;border:2px dashed var(--rosa-300);
+    background:var(--rosa-50);display:grid;place-items:center;text-align:center;
+    color:var(--rosa-600);font-weight:700;padding:20px;
+  }
+  .vacio small{display:block;font-weight:600;opacity:.8;margin-top:6px}
+
+  /* ---------- Visor a pantalla completa ---------- */
+  .zoom{position:fixed;inset:0;background:rgba(74,43,58,.88);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .zoom.abierto{display:flex}
+  .zoom img{max-width:100%;max-height:92vh;border-radius:12px}
+  .zoom button{position:absolute;top:18px;right:22px;background:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:1.4rem;color:var(--ciruela);cursor:pointer}
+
+  footer{text-align:center;padding:26px 20px;color:#a07890;font-size:.9rem;border-top:1px solid var(--rosa-200);background:#fff}
+
+  @media (max-width:640px){
+    .nav-in{justify-content:center}
+    /* En celular el texto ocupa más líneas: mínimo 9 cm y crece si hace falta */
+    .banda{height:auto;min-height:9cm;justify-content:flex-start}
+    .logo-banda{position:relative;align-self:flex-start;width:40%;margin-bottom:10px}
+    .flecha{width:40px;height:40px;font-size:1.2rem}
+    .miniaturas button{width:60px;height:76px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAVEGACIÓN ================= -->
+<header class="nav">
+  <div class="nav-in">
+    <a href="#inicio" class="marca">
+      <svg viewBox="0 0 64 64"><path d="M32 56s-20-12-20-28a11 11 0 0 1 20-6 11 11 0 0 1 20 6c0 16-20 28-20 28z" fill="#f4aec8"/><path d="M32 22v18M23 31h18" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>
+      Consultorio Rosa
+    </a>
+    <ul>
+      <li><a class="link" href="#inicio">Inicio</a></li>
+      <li><a class="link" href="#ruta">Ruta y denuncia</a></li>
+      <li><a class="link" href="#protocolo">Primeros auxilios</a></li>
+      <li><a class="link" href="#manual">Manual operativo</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= INICIO ================= -->
+<section class="pagina" id="pag-inicio">
+  <div class="banda">
+    <div class="logo-banda"><img alt="Imagen corporativa"></div>
+    <span class="burbuja b1"></span><span class="burbuja b2"></span>
+    <span class="burbuja b3"></span><span class="burbuja b4"></span>
+    <h1>Rutas Consultorio Rosa</h1>
+    <p>Orientación, cuidado y acompañamiento en un solo lugar</p>
+    <svg class="ola" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0 40 C 360 80 720 0 1080 30 S 1440 40 1440 40 V70 H0Z" fill="#fff5f8"/></svg>
+  </div>
+
+  <div class="tarjetas">
+    <!-- Tarjeta 1: Ruta -->
+    <article class="tarjeta">
+      <div class="icono i-ruta" id="icono-ruta">
+        <svg viewBox="0 0 140 140">
+          <path d="M25 118 C 45 95, 30 80, 60 72 S 95 60, 85 40" fill="none" stroke="#f7b48a" stroke-width="10" stroke-linecap="round"/>
+          <path d="M25 118 C 45 95, 30 80, 60 72 S 95 60, 85 40" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="6 7" stroke-linecap="round"/>
+          <circle cx="25" cy="118" r="7" fill="#ec89ad"/>
+          <path d="M85 14c-15 0-26 11-26 25 0 19 26 42 26 42s26-23 26-42c0-14-11-25-26-25z" fill="#ec89ad"/>
+          <path d="M85 26l13 5v9c0 9-6 15-13 18-7-3-13-9-13-18v-9z" fill="#fff"/>
+          <path d="M79 40l4 4 8-9" fill="none" stroke="#c2477a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M112 98s-12-7-12-15a6 6 0 0 1 12-2 6 6 0 0 1 12 2c0 8-12 15-12 15z" fill="#f9cfdf"/>
+        </svg>
+      </div>
+      <span class="chip naranja">1 página</span>
+      <h2>Ruta departamental y denuncia</h2>
+      <p>Conoce los pasos y las entidades para activar la ruta y presentar una denuncia.</p>
+      <a href="#ruta" class="btn">LEER</a>
+    </article>
+
+    <!-- Tarjeta 2: Protocolo -->
+    <article class="tarjeta">
+      <div class="icono i-auxilio" id="icono-auxilio">
+        <svg viewBox="0 0 140 140">
+          <rect x="50" y="30" width="40" height="18" rx="7" fill="none" stroke="#c2477a" stroke-width="6"/>
+          <rect x="22" y="42" width="96" height="72" rx="18" fill="#ec89ad"/>
+          <rect x="22" y="42" width="96" height="16" rx="8" fill="#f4aec8"/>
+          <path d="M70 104s-24-13-24-29a12 12 0 0 1 24-5 12 12 0 0 1 24 5c0 16-24 29-24 29z" fill="#fff"/>
+          <path d="M70 72v20M60 82h20" stroke="#b893e3" stroke-width="6" stroke-linecap="round"/>
+          <path d="M120 22l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#c9b3ef"/>
+          <circle cx="18" cy="28" r="4" fill="#f9cfdf"/>
+        </svg>
+      </div>
+      <span class="chip lila">5 páginas</span>
+      <h2>Protocolo de primeros auxilios</h2>
+      <p>Guía paso a paso para brindar atención inicial de forma segura y humana.</p>
+      <a href="#protocolo" class="btn">LEER</a>
+    </article>
+
+    <!-- Tarjeta 3: Manual -->
+    <article class="tarjeta">
+      <div class="icono i-manual" id="icono-manual">
+        <svg viewBox="0 0 140 140">
+          <path d="M70 46c-14-10-32-12-50-8v70c18-4 36-2 50 8z" fill="#fff" stroke="#ec89ad" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M70 46c14-10 32-12 50-8v70c-18-4-36-2-50 8z" fill="#fff" stroke="#ec89ad" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M70 46v70" stroke="#ec89ad" stroke-width="5"/>
+          <path d="M32 60c10-2 20-1 28 3M32 74c10-2 20-1 28 3M32 88c10-2 20-1 28 3" stroke="#c9e4f8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M80 63c8-4 18-5 28-3M80 77c8-4 18-5 28-3M80 91c8-4 18-5 28-3" stroke="#c9e4f8" stroke-width="4" stroke-linecap="round"/>
+          <path d="M70 40c-6-8-6-18 0-26 6 8 6 18 0 26z" fill="#ec89ad"/>
+          <path d="M70 40c-10-2-17-9-18-19 10 1 16 8 18 19z" fill="#f4aec8"/>
+          <path d="M70 40c10-2 17-9 18-19-10 1-16 8-18 19z" fill="#f4aec8"/>
+          <path d="M100 38v22l6-5 6 5V36" fill="#7fb8e6"/>
+        </svg>
+      </div>
+      <span class="chip azul">12 páginas</span>
+      <h2>Manual operativo</h2>
+      <p>Procedimientos, roles y lineamientos del funcionamiento del consultorio.</p>
+      <a href="#manual" class="btn">LEER</a>
+    </article>
+  </div>
+</section>
+
+<!-- ================= RUTA (naranja) ================= -->
+<section class="pagina" id="pag-ruta">
+  <div class="banda naranja">
+    <div class="logo-banda"><img alt="Imagen corporativa"></div>
+    <span class="burbuja b1"></span><span class="burbuja b2"></span>
+    <span class="burbuja b3"></span><span class="burbuja b4"></span>
+    <div class="mini" data-icono="icono-ruta"></div>
+    <h1>Ruta departamental y denuncia</h1>
+    <p>Sigue la ruta para activar la atención y presentar la denuncia</p>
+    <a href="#inicio" class="volver">← Volver al inicio</a>
+    <svg class="ola" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0 40 C 360 80 720 0 1080 30 S 1440 40 1440 40 V70 H0Z" fill="#fff5f8"/></svg>
+  </div>
+  <div class="contenido">
+    <div class="hoja" id="ruta-imagen"></div>
+  </div>
+</section>
+
+<!-- ================= PROTOCOLO (lila) ================= -->
+<section class="pagina" id="pag-protocolo">
+  <div class="banda lila">
+    <div class="logo-banda"><img alt="Imagen corporativa"></div>
+    <span class="burbuja b1"></span><span class="burbuja b2"></span>
+    <span class="burbuja b3"></span><span class="burbuja b4"></span>
+    <div class="mini" data-icono="icono-auxilio"></div>
+    <h1>Protocolo de primeros auxilios</h1>
+    <p>Atención inicial segura, paso a paso</p>
+    <a href="#inicio" class="volver">← Volver al inicio</a>
+    <svg class="ola" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0 40 C 360 80 720 0 1080 30 S 1440 40 1440 40 V70 H0Z" fill="#fff5f8"/></svg>
+  </div>
+  <div class="contenido">
+    <div class="carrusel lila" data-carpeta="protocolo" data-total="5"></div>
+  </div>
+</section>
+
+<!-- ================= MANUAL (azul claro) ================= -->
+<section class="pagina" id="pag-manual">
+  <div class="banda azul">
+    <div class="logo-banda"><img alt="Imagen corporativa"></div>
+    <span class="burbuja b1"></span><span class="burbuja b2"></span>
+    <span class="burbuja b3"></span><span class="burbuja b4"></span>
+    <div class="mini" data-icono="icono-manual"></div>
+    <h1>Manual operativo</h1>
+    <p>Procedimientos y lineamientos del consultorio</p>
+    <a href="#inicio" class="volver">← Volver al inicio</a>
+    <svg class="ola" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0 40 C 360 80 720 0 1080 30 S 1440 40 1440 40 V70 H0Z" fill="#fff5f8"/></svg>
+  </div>
+  <div class="contenido">
+    <div class="carrusel azul" data-carpeta="manual" data-total="12"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- Visor a pantalla completa -->
+<div class="zoom" id="zoom">
+  <button aria-label="Cerrar" onclick="cerrarZoom()">✕</button>
+  <img id="zoom-img" alt="">
+</div>
+
+<footer>Consultorio Rosa · Rutas de atención</footer>
+
+<script>
+/* ==================================================================
+   ESTRUCTURA DE CARPETAS (en la misma raíz que este index.html):
+
+     index.html
+     ruta/        1.jpg
+     protocolo/   1.jpg  2.jpg  3.jpg  4.jpg  5.jpg
+     manual/      1.jpg  2.jpg  ...  12.jpg
+
+   Las imágenes se llaman 1, 2, 3... La página prueba automáticamente
+   .jpg, .jpeg, .png y .webp, así que puedes usar cualquiera de esos.
+   Para cambiar la cantidad de imágenes, edita data-total="..." en el HTML.
+   ================================================================== */
+const EXTENSIONES = ["jpg", "jpeg", "png", "webp", "JPG", "PNG"];
+
+/* ==================================================================
+   IMAGEN CORPORATIVA (va en la raíz, junto a este index.html)
+   Cambia solo este nombre si tu archivo se llama distinto.
+   ================================================================== */
+const IMAGEN_CORPORATIVA = "imagen.png";
+
+document.querySelectorAll(".logo-banda img").forEach(img => {
+  img.onerror = () => { img.parentNode.style.display = "none"; };
+  img.src = IMAGEN_CORPORATIVA;
+});
+
+/* Crea una <img> que prueba varias extensiones; si ninguna existe, muestra un recuadro */
+function crearImagen(carpeta, n, alt) {
+  const img = document.createElement("img");
+  img.alt = alt;
+  img.draggable = false;
+  let intento = 0;
+  const probar = () => { img.src = `${carpeta}/${n}.${EXTENSIONES[intento]}`; };
+  img.onerror = () => {
+    intento++;
+    if (intento < EXTENSIONES.length) { probar(); return; }
+    const vacio = document.createElement("div");
+    vacio.className = "vacio";
+    vacio.innerHTML = `Aquí va la imagen ${n}<small>${carpeta}/${n}.jpg</small>`;
+    img.replaceWith(vacio);
+  };
+  img.addEventListener("click", () => abrirZoom(img.src));
+  probar();
+  return img;
+}
+
+/* ---------- Ruta: una sola imagen ---------- */
+document.getElementById("ruta-imagen").appendChild(crearImagen("ruta", 1, "Ruta departamental y denuncia"));
+
+/* ---------- Carruseles ---------- */
+const carruseles = [];
+document.querySelectorAll(".carrusel").forEach(el => {
+  const carpeta = el.dataset.carpeta;
+  const total = parseInt(el.dataset.total, 10);
+  let actual = 0;
+
+  el.innerHTML = `
+    <div class="visor-c">
+      <div class="contador"></div>
+      <button class="flecha izq" aria-label="Anterior">‹</button>
+      <div class="pista"></div>
+      <button class="flecha der" aria-label="Siguiente">›</button>
+    </div>
+    <div class="puntos"></div>
+    <div class="miniaturas"></div>`;
+
+  const pista = el.querySelector(".pista");
+  const puntos = el.querySelector(".puntos");
+  const minis = el.querySelector(".miniaturas");
+  const contador = el.querySelector(".contador");
+
+  for (let i = 1; i <= total; i++) {
+    const d = document.createElement("div");
+    d.className = "diapo";
+    d.appendChild(crearImagen(carpeta, i, `Página ${i} de ${total}`));
+    pista.appendChild(d);
+
+    const p = document.createElement("button");
+    p.setAttribute("aria-label", "Ir a la página " + i);
+    p.onclick = () => ir(i - 1);
+    puntos.appendChild(p);
+
+    const m = document.createElement("button");
+    m.setAttribute("aria-label", "Página " + i);
+    const mi = new Image();
+    let k = 0;
+    mi.onerror = () => { k++; if (k < EXTENSIONES.length) mi.src = `${carpeta}/${i}.${EXTENSIONES[k]}`; else mi.replaceWith(document.createTextNode(i)); };
+    mi.src = `${carpeta}/${i}.${EXTENSIONES[0]}`;
+    m.appendChild(mi);
+    m.onclick = () => ir(i - 1);
+    minis.appendChild(m);
+  }
+
+  function ir(n) {
+    actual = (n + total) % total;
+    pista.style.transform = `translateX(-${actual * 100}%)`;
+    contador.textContent = `${actual + 1} / ${total}`;
+    puntos.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === actual));
+    minis.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === actual));
+    const mActiva = minis.children[actual];
+    if (mActiva) minis.scrollTo({ left: mActiva.offsetLeft - minis.clientWidth / 2 + mActiva.clientWidth / 2, behavior: "smooth" });
+  }
+
+  el.querySelector(".izq").onclick = () => ir(actual - 1);
+  el.querySelector(".der").onclick = () => ir(actual + 1);
+
+  // Deslizar con el dedo en celulares
+  let x0 = null;
+  pista.addEventListener("touchstart", e => x0 = e.touches[0].clientX, { passive: true });
+  pista.addEventListener("touchend", e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) ir(actual + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+
+  carruseles.push({ seccion: el.closest(".pagina").id, ant: () => ir(actual - 1), sig: () => ir(actual + 1), ir });
+  ir(0);
+});
+
+/* Flechas del teclado para el carrusel visible */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { cerrarZoom(); return; }
+  if (document.getElementById("zoom").classList.contains("abierto")) return;
+  const c = carruseles.find(c => document.getElementById(c.seccion).classList.contains("visible"));
+  if (!c) return;
+  if (e.key === "ArrowLeft") c.ant();
+  if (e.key === "ArrowRight") c.sig();
+});
+
+/* ---------- Íconos en las cabeceras ---------- */
+document.querySelectorAll("[data-icono]").forEach(el => {
+  el.innerHTML = document.getElementById(el.dataset.icono).innerHTML;
+});
+
+/* ---------- Navegación entre páginas ---------- */
+function mostrarPagina() {
+  const id = (location.hash || "#inicio").slice(1);
+  const destino = document.getElementById("pag-" + id) ? id : "inicio";
+  document.querySelectorAll(".pagina").forEach(p => p.classList.remove("visible"));
+  document.getElementById("pag-" + destino).classList.add("visible");
+  document.querySelectorAll(".nav a.link").forEach(a =>
+    a.classList.toggle("activo", a.getAttribute("href") === "#" + destino));
+  carruseles.forEach(c => c.ir(0));
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", mostrarPagina);
+mostrarPagina();
+
+/* ---------- Zoom ---------- */
+function abrirZoom(src) {
+  document.getElementById("zoom-img").src = src;
+  document.getElementById("zoom").classList.add("abierto");
+}
+function cerrarZoom() { document.getElementById("zoom").classList.remove("abierto"); }
+document.getElementById("zoom").addEventListener("click", e => { if (e.target.id === "zoom") cerrarZoom(); });
+</script>
+</body>
+</html>
